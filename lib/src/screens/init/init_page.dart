@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:sociable/src/blocs/app_init_bloc/app_init_bloc.dart';
+import 'package:sociable/src/blocs/app_init_bloc/app_init_event.dart';
+import 'package:sociable/src/blocs/app_init_bloc/app_init_state.dart';
 import 'package:sociable/src/blocs/auth_bloc/auth_bloc.dart';
 import 'package:sociable/src/blocs/auth_bloc/auth_event.dart';
 import 'package:sociable/src/blocs/auth_bloc/auth_state.dart';
@@ -13,26 +16,56 @@ class InitPage extends StatefulWidget {
 }
 
 class _InitPageState extends State<InitPage> {
+  AppInitializationBloc initBloc;
+
+  @override
+  void initState() {
+    super.initState();
+
+    initBloc = AppInitializationBloc();
+    initBloc.emitEvent(AppInitializationEvent());
+  }
+
+  @override
+  void dispose() {
+    initBloc?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    AuthBloc authBloc = BlocProvider.of<AuthBloc>(context);
 
-    return BlocEventStateBuilder<AuthEvent, AuthState>(
-        bloc: authBloc,
-        builder: (BuildContext context, AuthState state ){
-          authBloc.emitEvent(AuthEventCheckAuthStatus());
+    return BlocEventStateBuilder<AppInitializationEvent, AppInitializationState>(
+        bloc: initBloc,
+        builder: (BuildContext context, AppInitializationState state ){
+          print("IN BUILDER");
+          print(initBloc.isVerified);
 
-          if(state.initializing && !state.verified){
-            return Text('Initialization in progress...');
-          } else if(state.verified && !state.initializing){
-            _redirectToPage(context, MyHomePage());
+          if (state.isInitialized){
+            print("INSIDE......!!!");
 
-          } else if(!state.verified && !state.initializing){
-            _redirectToPage(context, SignUp());
+            if(initBloc.isVerified){
+              print("WOWWOOOOOOOOOOOOOOO......!!!");
+              WidgetsBinding.instance.addPostFrameCallback((_){
+                Navigator.pushReplacementNamed(context, '/home');
+              });
+            }
+            if(!initBloc.isVerified){
+              print("XOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXOXO");
+              WidgetsBinding.instance.addPostFrameCallback((_){
+                Navigator.pushReplacementNamed(context, '/sign_up');
+              });
+
+            }
           }
 
-          return Text('Initialization in progress...');
+          return Scaffold(
+            body: Container(
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          );
         }
 
       );
@@ -40,13 +73,13 @@ class _InitPageState extends State<InitPage> {
 
 
 
-  void _redirectToPage(BuildContext context, Widget page){
-    WidgetsBinding.instance.addPostFrameCallback((_){
-      MaterialPageRoute newRoute = MaterialPageRoute(
-          builder: (BuildContext context) => page
-      );
-
-      Navigator.of(context).pushAndRemoveUntil(newRoute, ModalRoute.withName('/'));
-    });
-  }
+  // void _redirectToPage(BuildContext context, Widget page){
+  //   WidgetsBinding.instance.addPostFrameCallback((_){
+  //     MaterialPageRoute newRoute = MaterialPageRoute(
+  //         builder: (BuildContext context) => page
+  //     );
+  //
+  //     Navigator.of(context).pushReplacement(page);
+  //   });
+  // }
 }

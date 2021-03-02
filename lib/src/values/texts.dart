@@ -1,5 +1,5 @@
 class Texts{
-  String baseURL = 'https://37ce93908495.ngrok.io/api/v1';
+  String baseURL = 'https://60b4c7ced5fc.ngrok.io/api/v1';
   String appName = 'Sociabble';
   String privacyUrl = 'https://blabla.com';
   String buttonPushedText = 'You have pushed the button this many times:';

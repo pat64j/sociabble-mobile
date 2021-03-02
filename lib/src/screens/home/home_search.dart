@@ -28,11 +28,14 @@ class MyChildWidget extends StatelessWidget {
       child: BlocEventStateBuilder<ContactsEvent, ContactsState>(
         bloc: contactsBloc,
         builder: (BuildContext context, ContactsState state) {
+          print("ENTER BUILDER");
           if(!state.permissionGranted && !state.permissionGranting && !state.permissionGrantingFailure){
+            print("SEEK PERMISSION");
             contactsBloc.emitEvent(ContactsEventRequestPermission());
           }
 
           if (state.loading || state.permissionGranting) {
+            print("SEEK PERMISSION");
             return Container(
               child: Center(
                 child: Column(
@@ -43,6 +46,7 @@ class MyChildWidget extends StatelessWidget {
           }
 
           if (state.permissionGrantingFailure) {
+            print("SEEK PERMISSION FAILED");
             return Container(
               child: Center(
                 child: Text(R.texts.requiresContactPermission),
@@ -51,6 +55,7 @@ class MyChildWidget extends StatelessWidget {
           }
 
           if (state.loadingFailure) {
+            print("CONTACT LOADING FAILURE");
             return Container(
               child: Center(
                 child: Text(R.texts.contactsLoadError),

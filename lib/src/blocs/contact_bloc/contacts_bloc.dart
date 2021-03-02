@@ -6,7 +6,7 @@ import 'package:sociable/src/blocs/contact_bloc/contacts_state.dart';
 
 class ContactsBloc extends BlocEventStateBase<ContactsEvent, ContactsState>{
 
-  List<Contact> contacts;
+  List<Contact> contacts = [];
 
   ContactsBloc({this.contacts}):super(initialState: ContactsState());
 
@@ -15,9 +15,8 @@ class ContactsBloc extends BlocEventStateBase<ContactsEvent, ContactsState>{
   Stream<ContactsState> eventHandler(ContactsEvent event, ContactsState currentState) async* {
     if(event is ContactsEventRequestPermission){
       yield ContactsState.permissionGranting();
-      bool granted = await Permission.contacts.request().isGranted;
 
-      if(granted){
+      if(await Permission.contacts.request().isGranted){
         yield ContactsState.permissionGranted();
         yield ContactsState.loading();
 
@@ -45,7 +44,7 @@ class ContactsBloc extends BlocEventStateBase<ContactsEvent, ContactsState>{
         }
       }
 
-      if(!granted){
+      if(await Permission.contacts.request().isDenied){
         yield ContactsState.permissionGrantingFailure();
       }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sociable/src/blocs/auth_bloc/auth_bloc.dart';
 import 'package:sociable/src/blocs/base/bloc_base.dart';
 import 'package:sociable/src/screens/auth/sign_up.dart';
+import 'package:sociable/src/screens/home/home_index.dart';
 import 'package:sociable/src/screens/init/init_page.dart';
 
 import 'values/sociable_theme.dart';
@@ -16,7 +17,9 @@ class MyApp extends StatelessWidget {
         theme: sociableTheme,
         initialRoute: '/',
         routes: {
-          '/': (context) => SignUp(),
+          '/': (context) => InitPage(),
+          '/sign_up': (context) => SignUp(),
+          '/home': (context) => MyHomePage(),
         },
       ),
     );

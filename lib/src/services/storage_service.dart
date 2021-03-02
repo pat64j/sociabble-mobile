@@ -14,13 +14,14 @@ class StoreSecure{
   }
 
   Future<bool> dataExists(String key) async{
+    bool available = false;
     try{
-      await _storage.read(key: key);
-      return true;
+      available = await _storage.containsKey(key: key);
     }catch(e){
       print(e.toString());
-      return false;
+      available = false;
     }
+    return available;
   }
 
   Future<String> readSecureData(String key) async{
@@ -36,6 +37,16 @@ class StoreSecure{
   Future<bool> deleteSecureData(String key) async{
     try{
       await _storage.delete(key: key);
+      return true;
+    }catch(e){
+      print(e.toString());
+      return false;
+    }
+  }
+
+  Future<bool> deleteAllSecureData() async{
+    try{
+      await _storage.deleteAll();
       return true;
     }catch(e){
       print(e.toString());
